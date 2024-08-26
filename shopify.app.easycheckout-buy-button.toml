@@ -1,0 +1,33 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "ac139a803b0d55144187be4708dd1b0d"
+name = "EasyCheckout - Buy Button"
+handle = "fast-checkout-17"
+application_url = "https://fast-checkout.helpify24.com/"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = false
+dev_store_url = "fast-checkout-dev-store.myshopify.com"
+include_config_on_deploy = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = ""
+
+[auth]
+redirect_urls = [
+  "https://fast-checkout.helpify24.com/auth/callback",
+  "https://fast-checkout.helpify24.com/auth/shopify/callback",
+  "https://fast-checkout.helpify24.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-04"
+
+  [[webhooks.subscriptions]]
+  uri = "https://zendesk.helpify24.com/api/webhooks"
+  compliance_topics = [ "customers/redact", "customers/data_request", "shop/redact" ]
+
+[pos]
+embedded = false

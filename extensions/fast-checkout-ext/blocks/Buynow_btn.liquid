@@ -1,0 +1,248 @@
+{% assign button_text = 'Custom Button' %}
+<div>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  >
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+  </style>
+  <div class="buttonCont">
+  <button
+    data-variant-id="{{ product.variants.first.id }}"
+    id="custom-button"
+    style="display:none;cursor:pointer"
+  >
+    Buy Now
+  </button>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Fast Checkout",
+  "target": "section",
+  "settings": []
+}
+{% endschema %}
+
+<style>
+  .sticky {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    right: 0%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    animation: fadeIn 0.5s;
+  }
+  .animate {
+    animation: bounce;
+    animation-duration: 2s;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const button = document.querySelector("#custom-button")
+    const shop = Shopify.shop;
+    // {% comment %} const domain = 'https://fast-checkout.helpify24.com';//live/   {% endcomment %}
+    
+    console.log(shop);
+    
+    
+    const domain = 'https://intl-thumb-navigate-sport.trycloudflare.com';//local
+    const url = `${domain}/api/getbuttonstyle/${shop}`;
+    const button_analytics_api_url = `${domain}/api/button_analytics/create/${shop}/0`;
+    let animation = '';
+   
+    // Fetch and apply button styles // testing
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+
+        if (data.buttonStyle && button) {
+          let button_width = data?.buttonStyle.button_width;
+
+          button.style.backgroundColor = data.buttonStyle.background_color;
+          button.style.borderColor = data.buttonStyle.border_color;
+          button.style.borderWidth = data.buttonStyle.border_width + 'px';
+          button.style.padding = data.buttonStyle.button_padding + 'px';
+          button.style.width = button_width > 0 ? `${button_width}%` : `100%`;
+          button.style.fontSize = data.buttonStyle.font_size + 'px';
+          button.style.color = data.buttonStyle.text_color;
+          button.style.cursor = "pointer";
+          animation = data.buttonStyle.animation;
+          console.log("Font family:",data.buttonStyle.button_fontfamily)
+          button.style.fontFamily = get_font_family(data.buttonStyle.button_fontfamily);
+
+          button.style.display = data.buttonStyle.btn_enabled ? 'block' : 'none'; // Initially hidden
+
+          const addToCartbtn = document.querySelector('.product-form__submit');
+          
+          {% comment %} const buynowbtn = document.querySelector('shopify-buy-it-now-button'); {% endcomment %}
+
+        if(data.buttonStyle.btn_enabled)
+        {
+          // Apply custom attributes or handle them separately
+          if (data?.buttonStyle.text) {
+            button.textContent = data?.buttonStyle.text;
+          }
+
+          if (data?.buttonStyle.btn_sticky) {
+            button.classList.add('sticky');
+            document.body.appendChild(button); // Append button to body
+            document.querySelectorAll("#custom-button")?.forEach(element=>{
+              if(!element.classList.contains("sticky"))
+              {
+                element.remove();
+              }
+            })
+            
+            {% comment %} button.style.display = 'block'; {% endcomment %}
+          } else {
+            button.classList.remove('sticky');
+          }
+
+          if (data.buttonStyle.hide_shopify_buynow) {
+            document.querySelector(".shopify-payment-button").style.display ="none";
+            // Implement the logic to hide Shopify's Buy Now button
+          } else {
+            document.querySelector(".shopify-payment-button").style.display ="block";
+          }
+
+          if (data.buttonStyle.hide_addtocart) {
+            // Implement the logic to hide the Add to Cart button
+            addToCartbtn.style.display = 'none';
+          } else {
+            addToCartbtn.style.display = 'block';
+          }
+
+        }
+        }
+      })
+      .catch((error) => console.error('Error fetching button styles:', error));
+
+    // Add to cart and redirect to checkout on button click
+    button.addEventListener('click', function (event) {
+      event.preventDefault();
+      const Variant_wrapper = document.querySelector('variant-selects');
+      const find_default_variantID = button.getAttribute('data-variant-id');
+      
+
+      const URL = window.location.href;
+      const variant_id =  getVariantIdFromUrl(URL) != null ? getVariantIdFromUrl(URL): find_default_variantID;
+
+      console.log("Variant_id:",getVariantIdFromUrl(URL));
+
+      if (button.disabled) {
+        return console.log('Button is disabled');
+      }
+      if(variant_id){
+        addToCart(variant_id);
+        console.log("clicked");
+      }
+      
+    });
+
+  // if(animation != "No Animation"){
+
+  //   setInterval(() => {
+  //     button.classList.add('animate__animated', `animate__${animation}`);
+
+  //     setTimeout(() => {
+  //       button.classList.remove('animate__animated', `animate__${animation}`);
+  //     }, 2000);
+  //   }, 3000);
+
+  // }
+
+    function addToCart(variantId) {
+      console.log("Variant id in cart:",variantId)
+      let quantity = document.querySelector("input[name='quantity']")?.value;
+
+
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          id: variantId,
+          quantity: quantity?quantity:1,
+          properties: {
+            _Button: 'Fast-checkout-button',
+          },
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log('Product added to cart:', data);
+
+          fetch(button_analytics_api_url)
+            .then((response) => response.json())
+            .then((data) => {
+                        // Redirect to checkout page after adding to cart
+                        console.log('Count status:', data);
+                        window.location.href = '/checkout';
+            });
+        })
+        .catch((error) => {
+          console.error('Error adding product to cart:', error);
+          alert('There was an error adding the product to the cart.');
+        });
+    }
+    const get_font_family = (fontfamily) => {
+      switch (fontfamily) {
+        case 'Theme Default':
+          return 'inherit';
+
+        case 'Open Sans':
+          return '"Open Sans", sans-serif';
+
+        case 'Lato':
+          return '"Lato", sans-serif';
+
+        case 'Montserret':
+          return '"Montserrat", sans-serif';
+
+        case 'Poppins':
+          return '"Poppins", sans-serif';
+
+        case 'Merriweather':
+          return '"Merriweather", serif';
+
+        case 'Playfair Display':
+          return '"Playfair Display", serif';
+        default:
+          break;
+      }
+    };
+
+    function getVariantIdFromUrl(url) {
+      try {
+        // Create a new URL object from the given URL string
+        const urlObj = new URL(url);
+    
+        // Get the search parameters from the URL
+        const searchParams = new URLSearchParams(urlObj.search);
+    
+        // Get the 'variant' parameter value
+        const variantId = searchParams.get('variant');
+    
+        // Return the variant ID if it exists, otherwise return null
+        return variantId ? variantId : null;
+      } catch (error) {
+        console.error('Invalid URL:', error);
+        return null;
+      }
+    }
+  });
+</script>

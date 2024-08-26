@@ -1,0 +1,28 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "afb97089f44998cffa2c8698d8c27e6f"
+name = "fast-checkout-development"
+handle = "fast-checkout-development"
+application_url = "https://cut-paraguay-feedback-king.trycloudflare.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "fast-checkout-dev-store.myshopify.com"
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "read_checkouts,read_customers,read_fulfillments,read_orders,read_product_listings,read_products,write_checkouts,write_customers,write_fulfillments,write_orders,write_product_listings,write_products"
+
+[auth]
+redirect_urls = [
+  "https://cut-paraguay-feedback-king.trycloudflare.com/auth/callback",
+  "https://cut-paraguay-feedback-king.trycloudflare.com/auth/shopify/callback",
+  "https://cut-paraguay-feedback-king.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-04"
+
+[pos]
+embedded = false

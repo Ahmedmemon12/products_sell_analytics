@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Note that some adapters may set a maximum length for the String type by default, please ensure your strings are long
+// enough when changing adapters.
+// See https://www.prisma.io/docs/orm/reference/prisma-schema-reference#string for more information
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  //url      = "mysql://root:@localhost:3306/fast_checkout_db"
+}
+
+model Session {
+  id          String    @id
+  shop        String
+  state       String
+  isOnline    Boolean   @default(false)
+  scope       String?
+  expires     DateTime?
+  accessToken String
+  userId      BigInt?
+}
+
+model Button_style {
+  id                    Int      @id @default(autoincrement())
+  shop                  String   @unique(map: "shop")
+  btn_enabled           Boolean  @default(false)
+  text                  String   
+  btn_sticky            Boolean  @default(false)
+  hide_shopify_buynow   Boolean  @default(false)
+  hide_addtocart        Boolean
+  background_color      String
+  text_color            String
+  font_size             Float
+  animation             String
+  border_color          String
+  border_width          Float
+  button_width          Float
+  button_padding        Float
+  button_fontfamily     String @default("Theme Default")
+}
+
+model button_analytics {
+  id                    Int      @id @default(autoincrement())
+  shop                  String   
+  click_count           Int 
+  date                  String   @default("")
+  convertion_count      Int      @default(0)
+}
